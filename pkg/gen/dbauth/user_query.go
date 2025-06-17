@@ -22,17 +22,14 @@ import (
 // UserQuery is the builder for querying User entities.
 type UserQuery struct {
 	config
-	ctx                 *QueryContext
-	order               []user.OrderOption
-	inters              []Interceptor
-	predicates          []predicate.User
-	withCurrentDomain   *DomainQuery
-	withDomains         *DomainQuery
-	withUserDomain      *UserDomainQuery
-	loadTotal           []func(context.Context, []*User) error
-	modifiers           []func(*sql.Selector)
-	withNamedDomains    map[string]*DomainQuery
-	withNamedUserDomain map[string]*UserDomainQuery
+	ctx               *QueryContext
+	order             []user.OrderOption
+	inters            []Interceptor
+	predicates        []predicate.User
+	withCurrentDomain *DomainQuery
+	withDomains       *DomainQuery
+	withUserDomain    *UserDomainQuery
+	modifiers         []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -495,25 +492,6 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			return nil, err
 		}
 	}
-	for name, query := range uq.withNamedDomains {
-		if err := uq.loadDomains(ctx, query, nodes,
-			func(n *User) { n.appendNamedDomains(name) },
-			func(n *User, e *Domain) { n.appendNamedDomains(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range uq.withNamedUserDomain {
-		if err := uq.loadUserDomain(ctx, query, nodes,
-			func(n *User) { n.appendNamedUserDomain(name) },
-			func(n *User, e *UserDomain) { n.appendNamedUserDomain(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for i := range uq.loadTotal {
-		if err := uq.loadTotal[i](ctx, nodes); err != nil {
-			return nil, err
-		}
-	}
 	return nodes, nil
 }
 
@@ -732,34 +710,6 @@ func (uq *UserQuery) sqlQuery(ctx context.Context) *sql.Selector {
 func (uq *UserQuery) Modify(modifiers ...func(s *sql.Selector)) *UserSelect {
 	uq.modifiers = append(uq.modifiers, modifiers...)
 	return uq.Select()
-}
-
-// WithNamedDomains tells the query-builder to eager-load the nodes that are connected to the "domains"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithNamedDomains(name string, opts ...func(*DomainQuery)) *UserQuery {
-	query := (&DomainClient{config: uq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if uq.withNamedDomains == nil {
-		uq.withNamedDomains = make(map[string]*DomainQuery)
-	}
-	uq.withNamedDomains[name] = query
-	return uq
-}
-
-// WithNamedUserDomain tells the query-builder to eager-load the nodes that are connected to the "user_domain"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithNamedUserDomain(name string, opts ...func(*UserDomainQuery)) *UserQuery {
-	query := (&UserDomainClient{config: uq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if uq.withNamedUserDomain == nil {
-		uq.withNamedUserDomain = make(map[string]*UserDomainQuery)
-	}
-	uq.withNamedUserDomain[name] = query
-	return uq
 }
 
 // UserGroupBy is the group-by builder for User entities.

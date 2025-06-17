@@ -4,7 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"github.com/hughbliss/my_database/internal/mixin"
+	xidmixin "github.com/hughbliss/my_database/internal/mixin/xid"
 )
 
 // Domain holds the schema definition for the Domain entity.
@@ -16,6 +16,7 @@ type Domain struct {
 func (Domain) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name"),
+		//field.JSON("settings", map[string]interface{}{}),
 	}
 }
 
@@ -31,6 +32,6 @@ func (Domain) Edges() []ent.Edge {
 
 func (Domain) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		mixin.XIDMixin{},
+		xidmixin.Mixin{},
 	}
 }

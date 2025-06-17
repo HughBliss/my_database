@@ -10,8 +10,8 @@ import (
 var (
 	// ExamplesColumns holds the columns for the "examples" table.
 	ExamplesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString},
-		{Name: "some_string", Type: field.TypeString},
+		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"postgres": "char(20)"}},
+		{Name: "some_string", Type: field.TypeString, Default: "test"},
 		{Name: "some_int", Type: field.TypeInt},
 		{Name: "some_float", Type: field.TypeFloat64},
 		{Name: "some_bool", Type: field.TypeBool},

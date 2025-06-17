@@ -17,6 +17,10 @@ func init() {
 	_ = exampleMixinFields0
 	exampleFields := example.Example{}.Fields()
 	_ = exampleFields
+	// exampleDescSomeString is the schema descriptor for some_string field.
+	exampleDescSomeString := exampleFields[0].Descriptor()
+	// example.DefaultSomeString holds the default value on creation for the some_string field.
+	example.DefaultSomeString = exampleDescSomeString.Default.(string)
 	// exampleDescID is the schema descriptor for id field.
 	exampleDescID := exampleMixinFields0[0].Descriptor()
 	// example.DefaultID holds the default value on creation for the id field.

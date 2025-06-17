@@ -5,7 +5,7 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/mixin"
-	internalMixin "github.com/hughbliss/my_database/internal/mixin"
+	xidmixin "github.com/hughbliss/my_database/internal/mixin/xid"
 	"github.com/rs/xid"
 )
 
@@ -34,7 +34,7 @@ func (Role) Edges() []ent.Edge {
 }
 func (Role) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		internalMixin.XIDMixin{},
+		xidmixin.Mixin{},
 		mixin.Time{},
 	}
 }

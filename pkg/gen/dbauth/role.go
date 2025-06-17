@@ -47,10 +47,6 @@ type RoleEdges struct {
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [2]bool
-	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
-
-	namedUserDomain map[string][]*UserDomain
 }
 
 // DomainOrErr returns the Domain value or an error if the edge
@@ -210,30 +206,6 @@ func (r *Role) String() string {
 	builder.WriteString(fmt.Sprintf("%v", r.DomainID))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedUserDomain returns the UserDomain named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (r *Role) NamedUserDomain(name string) ([]*UserDomain, error) {
-	if r.Edges.namedUserDomain == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := r.Edges.namedUserDomain[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (r *Role) appendNamedUserDomain(name string, edges ...*UserDomain) {
-	if r.Edges.namedUserDomain == nil {
-		r.Edges.namedUserDomain = make(map[string][]*UserDomain)
-	}
-	if len(edges) == 0 {
-		r.Edges.namedUserDomain[name] = []*UserDomain{}
-	} else {
-		r.Edges.namedUserDomain[name] = append(r.Edges.namedUserDomain[name], edges...)
-	}
 }
 
 // Roles is a parsable slice of Role.

@@ -23,7 +23,6 @@ type ExampleQuery struct {
 	order      []example.OrderOption
 	inters     []Interceptor
 	predicates []predicate.Example
-	loadTotal  []func(context.Context, []*Example) error
 	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -358,11 +357,6 @@ func (eq *ExampleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Exam
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
-	}
-	for i := range eq.loadTotal {
-		if err := eq.loadTotal[i](ctx, nodes); err != nil {
-			return nil, err
-		}
 	}
 	return nodes, nil
 }

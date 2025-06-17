@@ -23,20 +23,15 @@ import (
 // DomainQuery is the builder for querying Domain entities.
 type DomainQuery struct {
 	config
-	ctx                  *QueryContext
-	order                []domain.OrderOption
-	inters               []Interceptor
-	predicates           []predicate.Domain
-	withActiveUsers      *UserQuery
-	withRoles            *RoleQuery
-	withUsers            *UserQuery
-	withUserDomain       *UserDomainQuery
-	loadTotal            []func(context.Context, []*Domain) error
-	modifiers            []func(*sql.Selector)
-	withNamedActiveUsers map[string]*UserQuery
-	withNamedRoles       map[string]*RoleQuery
-	withNamedUsers       map[string]*UserQuery
-	withNamedUserDomain  map[string]*UserDomainQuery
+	ctx             *QueryContext
+	order           []domain.OrderOption
+	inters          []Interceptor
+	predicates      []predicate.Domain
+	withActiveUsers *UserQuery
+	withRoles       *RoleQuery
+	withUsers       *UserQuery
+	withUserDomain  *UserDomainQuery
+	modifiers       []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -542,39 +537,6 @@ func (dq *DomainQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Domai
 			return nil, err
 		}
 	}
-	for name, query := range dq.withNamedActiveUsers {
-		if err := dq.loadActiveUsers(ctx, query, nodes,
-			func(n *Domain) { n.appendNamedActiveUsers(name) },
-			func(n *Domain, e *User) { n.appendNamedActiveUsers(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range dq.withNamedRoles {
-		if err := dq.loadRoles(ctx, query, nodes,
-			func(n *Domain) { n.appendNamedRoles(name) },
-			func(n *Domain, e *Role) { n.appendNamedRoles(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range dq.withNamedUsers {
-		if err := dq.loadUsers(ctx, query, nodes,
-			func(n *Domain) { n.appendNamedUsers(name) },
-			func(n *Domain, e *User) { n.appendNamedUsers(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range dq.withNamedUserDomain {
-		if err := dq.loadUserDomain(ctx, query, nodes,
-			func(n *Domain) { n.appendNamedUserDomain(name) },
-			func(n *Domain, e *UserDomain) { n.appendNamedUserDomain(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for i := range dq.loadTotal {
-		if err := dq.loadTotal[i](ctx, nodes); err != nil {
-			return nil, err
-		}
-	}
 	return nodes, nil
 }
 
@@ -821,62 +783,6 @@ func (dq *DomainQuery) sqlQuery(ctx context.Context) *sql.Selector {
 func (dq *DomainQuery) Modify(modifiers ...func(s *sql.Selector)) *DomainSelect {
 	dq.modifiers = append(dq.modifiers, modifiers...)
 	return dq.Select()
-}
-
-// WithNamedActiveUsers tells the query-builder to eager-load the nodes that are connected to the "active_users"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (dq *DomainQuery) WithNamedActiveUsers(name string, opts ...func(*UserQuery)) *DomainQuery {
-	query := (&UserClient{config: dq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if dq.withNamedActiveUsers == nil {
-		dq.withNamedActiveUsers = make(map[string]*UserQuery)
-	}
-	dq.withNamedActiveUsers[name] = query
-	return dq
-}
-
-// WithNamedRoles tells the query-builder to eager-load the nodes that are connected to the "roles"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (dq *DomainQuery) WithNamedRoles(name string, opts ...func(*RoleQuery)) *DomainQuery {
-	query := (&RoleClient{config: dq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if dq.withNamedRoles == nil {
-		dq.withNamedRoles = make(map[string]*RoleQuery)
-	}
-	dq.withNamedRoles[name] = query
-	return dq
-}
-
-// WithNamedUsers tells the query-builder to eager-load the nodes that are connected to the "users"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (dq *DomainQuery) WithNamedUsers(name string, opts ...func(*UserQuery)) *DomainQuery {
-	query := (&UserClient{config: dq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if dq.withNamedUsers == nil {
-		dq.withNamedUsers = make(map[string]*UserQuery)
-	}
-	dq.withNamedUsers[name] = query
-	return dq
-}
-
-// WithNamedUserDomain tells the query-builder to eager-load the nodes that are connected to the "user_domain"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (dq *DomainQuery) WithNamedUserDomain(name string, opts ...func(*UserDomainQuery)) *DomainQuery {
-	query := (&UserDomainClient{config: dq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if dq.withNamedUserDomain == nil {
-		dq.withNamedUserDomain = make(map[string]*UserDomainQuery)
-	}
-	dq.withNamedUserDomain[name] = query
-	return dq
 }
 
 // DomainGroupBy is the group-by builder for Domain entities.

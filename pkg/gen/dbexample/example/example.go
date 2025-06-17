@@ -47,6 +47,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultSomeString holds the default value on creation for the "some_string" field.
+	DefaultSomeString string
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() xid.ID
 )

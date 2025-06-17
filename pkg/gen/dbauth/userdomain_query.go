@@ -28,7 +28,6 @@ type UserDomainQuery struct {
 	withUser   *UserQuery
 	withDomain *DomainQuery
 	withRole   *RoleQuery
-	loadTotal  []func(context.Context, []*UserDomain) error
 	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -415,11 +414,6 @@ func (udq *UserDomainQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	if query := udq.withRole; query != nil {
 		if err := udq.loadRole(ctx, query, nodes, nil,
 			func(n *UserDomain, e *Role) { n.Edges.Role = e }); err != nil {
-			return nil, err
-		}
-	}
-	for i := range udq.loadTotal {
-		if err := udq.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}

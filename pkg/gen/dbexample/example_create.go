@@ -30,6 +30,14 @@ func (ec *ExampleCreate) SetSomeString(s string) *ExampleCreate {
 	return ec
 }
 
+// SetNillableSomeString sets the "some_string" field if the given value is not nil.
+func (ec *ExampleCreate) SetNillableSomeString(s *string) *ExampleCreate {
+	if s != nil {
+		ec.SetSomeString(*s)
+	}
+	return ec
+}
+
 // SetSomeInt sets the "some_int" field.
 func (ec *ExampleCreate) SetSomeInt(i int) *ExampleCreate {
 	ec.mutation.SetSomeInt(i)
@@ -103,6 +111,10 @@ func (ec *ExampleCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (ec *ExampleCreate) defaults() {
+	if _, ok := ec.mutation.SomeString(); !ok {
+		v := example.DefaultSomeString
+		ec.mutation.SetSomeString(v)
+	}
 	if _, ok := ec.mutation.ID(); !ok {
 		v := example.DefaultID()
 		ec.mutation.SetID(v)

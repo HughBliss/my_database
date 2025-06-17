@@ -10,7 +10,7 @@ import (
 var (
 	// DomainsColumns holds the columns for the "domains" table.
 	DomainsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString},
+		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"postgres": "char(20)"}},
 		{Name: "name", Type: field.TypeString},
 	}
 	// DomainsTable holds the schema information for the "domains" table.
@@ -21,13 +21,13 @@ var (
 	}
 	// RolesColumns holds the columns for the "roles" table.
 	RolesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString},
+		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"postgres": "char(20)"}},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString},
 		{Name: "permissions", Type: field.TypeJSON},
-		{Name: "domain_id", Type: field.TypeString},
+		{Name: "domain_id", Type: field.TypeString, SchemaType: map[string]string{"postgres": "char(20)"}},
 	}
 	// RolesTable holds the schema information for the "roles" table.
 	RolesTable = &schema.Table{
@@ -45,13 +45,13 @@ var (
 	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString},
+		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"postgres": "char(20)"}},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
 		{Name: "name", Type: field.TypeString},
 		{Name: "email", Type: field.TypeString},
 		{Name: "password_hash", Type: field.TypeString},
-		{Name: "current_domain_id", Type: field.TypeString},
+		{Name: "current_domain_id", Type: field.TypeString, SchemaType: map[string]string{"postgres": "char(20)"}},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
@@ -69,9 +69,9 @@ var (
 	}
 	// UserDomainsColumns holds the columns for the "user_domains" table.
 	UserDomainsColumns = []*schema.Column{
-		{Name: "user_id", Type: field.TypeString},
-		{Name: "domain_id", Type: field.TypeString},
-		{Name: "role_id", Type: field.TypeString},
+		{Name: "user_id", Type: field.TypeString, SchemaType: map[string]string{"postgres": "char(20)"}},
+		{Name: "domain_id", Type: field.TypeString, SchemaType: map[string]string{"postgres": "char(20)"}},
+		{Name: "role_id", Type: field.TypeString, SchemaType: map[string]string{"postgres": "char(20)"}},
 	}
 	// UserDomainsTable holds the schema information for the "user_domains" table.
 	UserDomainsTable = &schema.Table{

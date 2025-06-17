@@ -27,7 +27,7 @@ func main() {
 			gen.FeatureIntercept,
 			gen.FeatureSnapshot,
 			gen.FeatureVersionedMigration,
-		}}, entc.Extensions()); err != nil {
+		}}); err != nil {
 		panic(err)
 	}
 }

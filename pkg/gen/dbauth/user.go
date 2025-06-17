@@ -48,11 +48,6 @@ type UserEdges struct {
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [3]bool
-	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
-
-	namedDomains    map[string][]*Domain
-	namedUserDomain map[string][]*UserDomain
 }
 
 // CurrentDomainOrErr returns the CurrentDomain value or an error if the edge
@@ -222,54 +217,6 @@ func (u *User) String() string {
 	builder.WriteString(fmt.Sprintf("%v", u.CurrentDomainID))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedDomains returns the Domains named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (u *User) NamedDomains(name string) ([]*Domain, error) {
-	if u.Edges.namedDomains == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := u.Edges.namedDomains[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (u *User) appendNamedDomains(name string, edges ...*Domain) {
-	if u.Edges.namedDomains == nil {
-		u.Edges.namedDomains = make(map[string][]*Domain)
-	}
-	if len(edges) == 0 {
-		u.Edges.namedDomains[name] = []*Domain{}
-	} else {
-		u.Edges.namedDomains[name] = append(u.Edges.namedDomains[name], edges...)
-	}
-}
-
-// NamedUserDomain returns the UserDomain named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (u *User) NamedUserDomain(name string) ([]*UserDomain, error) {
-	if u.Edges.namedUserDomain == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := u.Edges.namedUserDomain[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (u *User) appendNamedUserDomain(name string, edges ...*UserDomain) {
-	if u.Edges.namedUserDomain == nil {
-		u.Edges.namedUserDomain = make(map[string][]*UserDomain)
-	}
-	if len(edges) == 0 {
-		u.Edges.namedUserDomain[name] = []*UserDomain{}
-	} else {
-		u.Edges.namedUserDomain[name] = append(u.Edges.namedUserDomain[name], edges...)
-	}
 }
 
 // Users is a parsable slice of User.

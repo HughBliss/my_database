@@ -22,15 +22,13 @@ import (
 // RoleQuery is the builder for querying Role entities.
 type RoleQuery struct {
 	config
-	ctx                 *QueryContext
-	order               []role.OrderOption
-	inters              []Interceptor
-	predicates          []predicate.Role
-	withDomain          *DomainQuery
-	withUserDomain      *UserDomainQuery
-	loadTotal           []func(context.Context, []*Role) error
-	modifiers           []func(*sql.Selector)
-	withNamedUserDomain map[string]*UserDomainQuery
+	ctx            *QueryContext
+	order          []role.OrderOption
+	inters         []Interceptor
+	predicates     []predicate.Role
+	withDomain     *DomainQuery
+	withUserDomain *UserDomainQuery
+	modifiers      []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -451,18 +449,6 @@ func (rq *RoleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Role, e
 			return nil, err
 		}
 	}
-	for name, query := range rq.withNamedUserDomain {
-		if err := rq.loadUserDomain(ctx, query, nodes,
-			func(n *Role) { n.appendNamedUserDomain(name) },
-			func(n *Role, e *UserDomain) { n.appendNamedUserDomain(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for i := range rq.loadTotal {
-		if err := rq.loadTotal[i](ctx, nodes); err != nil {
-			return nil, err
-		}
-	}
 	return nodes, nil
 }
 
@@ -620,20 +606,6 @@ func (rq *RoleQuery) sqlQuery(ctx context.Context) *sql.Selector {
 func (rq *RoleQuery) Modify(modifiers ...func(s *sql.Selector)) *RoleSelect {
 	rq.modifiers = append(rq.modifiers, modifiers...)
 	return rq.Select()
-}
-
-// WithNamedUserDomain tells the query-builder to eager-load the nodes that are connected to the "user_domain"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (rq *RoleQuery) WithNamedUserDomain(name string, opts ...func(*UserDomainQuery)) *RoleQuery {
-	query := (&UserDomainClient{config: rq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if rq.withNamedUserDomain == nil {
-		rq.withNamedUserDomain = make(map[string]*UserDomainQuery)
-	}
-	rq.withNamedUserDomain[name] = query
-	return rq
 }
 
 // RoleGroupBy is the group-by builder for Role entities.

@@ -28,16 +28,16 @@ func init() {
 	roleMixin := auth.Role{}.Mixin()
 	roleMixinFields0 := roleMixin[0].Fields()
 	_ = roleMixinFields0
-	roleMixinFields2 := roleMixin[2].Fields()
-	_ = roleMixinFields2
+	roleMixinFields1 := roleMixin[1].Fields()
+	_ = roleMixinFields1
 	roleFields := auth.Role{}.Fields()
 	_ = roleFields
 	// roleDescCreateTime is the schema descriptor for create_time field.
-	roleDescCreateTime := roleMixinFields2[0].Descriptor()
+	roleDescCreateTime := roleMixinFields1[0].Descriptor()
 	// role.DefaultCreateTime holds the default value on creation for the create_time field.
 	role.DefaultCreateTime = roleDescCreateTime.Default.(func() time.Time)
 	// roleDescUpdateTime is the schema descriptor for update_time field.
-	roleDescUpdateTime := roleMixinFields2[1].Descriptor()
+	roleDescUpdateTime := roleMixinFields1[1].Descriptor()
 	// role.DefaultUpdateTime holds the default value on creation for the update_time field.
 	role.DefaultUpdateTime = roleDescUpdateTime.Default.(func() time.Time)
 	// role.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
@@ -49,16 +49,16 @@ func init() {
 	userMixin := auth.User{}.Mixin()
 	userMixinFields0 := userMixin[0].Fields()
 	_ = userMixinFields0
-	userMixinFields2 := userMixin[2].Fields()
-	_ = userMixinFields2
+	userMixinFields1 := userMixin[1].Fields()
+	_ = userMixinFields1
 	userFields := auth.User{}.Fields()
 	_ = userFields
 	// userDescCreateTime is the schema descriptor for create_time field.
-	userDescCreateTime := userMixinFields2[0].Descriptor()
+	userDescCreateTime := userMixinFields1[0].Descriptor()
 	// user.DefaultCreateTime holds the default value on creation for the create_time field.
 	user.DefaultCreateTime = userDescCreateTime.Default.(func() time.Time)
 	// userDescUpdateTime is the schema descriptor for update_time field.
-	userDescUpdateTime := userMixinFields2[1].Descriptor()
+	userDescUpdateTime := userMixinFields1[1].Descriptor()
 	// user.DefaultUpdateTime holds the default value on creation for the update_time field.
 	user.DefaultUpdateTime = userDescUpdateTime.Default.(func() time.Time)
 	// user.UpdateDefaultUpdateTime holds the default value on update for the update_time field.

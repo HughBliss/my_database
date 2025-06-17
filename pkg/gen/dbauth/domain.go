@@ -38,13 +38,6 @@ type DomainEdges struct {
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [4]bool
-	// totalCount holds the count of the edges above.
-	totalCount [3]map[string]int
-
-	namedActiveUsers map[string][]*User
-	namedRoles       map[string][]*Role
-	namedUsers       map[string][]*User
-	namedUserDomain  map[string][]*UserDomain
 }
 
 // ActiveUsersOrErr returns the ActiveUsers value or an error if the edge
@@ -179,102 +172,6 @@ func (d *Domain) String() string {
 	builder.WriteString(d.Name)
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedActiveUsers returns the ActiveUsers named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (d *Domain) NamedActiveUsers(name string) ([]*User, error) {
-	if d.Edges.namedActiveUsers == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := d.Edges.namedActiveUsers[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (d *Domain) appendNamedActiveUsers(name string, edges ...*User) {
-	if d.Edges.namedActiveUsers == nil {
-		d.Edges.namedActiveUsers = make(map[string][]*User)
-	}
-	if len(edges) == 0 {
-		d.Edges.namedActiveUsers[name] = []*User{}
-	} else {
-		d.Edges.namedActiveUsers[name] = append(d.Edges.namedActiveUsers[name], edges...)
-	}
-}
-
-// NamedRoles returns the Roles named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (d *Domain) NamedRoles(name string) ([]*Role, error) {
-	if d.Edges.namedRoles == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := d.Edges.namedRoles[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (d *Domain) appendNamedRoles(name string, edges ...*Role) {
-	if d.Edges.namedRoles == nil {
-		d.Edges.namedRoles = make(map[string][]*Role)
-	}
-	if len(edges) == 0 {
-		d.Edges.namedRoles[name] = []*Role{}
-	} else {
-		d.Edges.namedRoles[name] = append(d.Edges.namedRoles[name], edges...)
-	}
-}
-
-// NamedUsers returns the Users named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (d *Domain) NamedUsers(name string) ([]*User, error) {
-	if d.Edges.namedUsers == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := d.Edges.namedUsers[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (d *Domain) appendNamedUsers(name string, edges ...*User) {
-	if d.Edges.namedUsers == nil {
-		d.Edges.namedUsers = make(map[string][]*User)
-	}
-	if len(edges) == 0 {
-		d.Edges.namedUsers[name] = []*User{}
-	} else {
-		d.Edges.namedUsers[name] = append(d.Edges.namedUsers[name], edges...)
-	}
-}
-
-// NamedUserDomain returns the UserDomain named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (d *Domain) NamedUserDomain(name string) ([]*UserDomain, error) {
-	if d.Edges.namedUserDomain == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := d.Edges.namedUserDomain[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (d *Domain) appendNamedUserDomain(name string, edges ...*UserDomain) {
-	if d.Edges.namedUserDomain == nil {
-		d.Edges.namedUserDomain = make(map[string][]*UserDomain)
-	}
-	if len(edges) == 0 {
-		d.Edges.namedUserDomain[name] = []*UserDomain{}
-	} else {
-		d.Edges.namedUserDomain[name] = append(d.Edges.namedUserDomain[name], edges...)
-	}
 }
 
 // Domains is a parsable slice of Domain.
