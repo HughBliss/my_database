@@ -11,10 +11,12 @@ import (
 )
 
 func Mock(t enttest.TestingT) *dbauth.Client {
-	db, err := otelsql.Open(dialect.MySQL, "file:ent?mode=memory&cache=shared&_fk=1")
+	db, err := otelsql.Open(dialect.SQLite, "file:ent?mode=memory&cache=shared&_fk=1")
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
-	return enttest.NewClient(t, enttest.WithOptions(dbauth.Driver(sql.OpenDB(dialect.MySQL, db))))
+	return enttest.NewClient(t, enttest.WithOptions(
+		dbauth.Driver(sql.OpenDB(dialect.SQLite, db))),
+	).Debug()
 }
